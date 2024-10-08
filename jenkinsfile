@@ -1,16 +1,20 @@
-pipeline {
-    agent any
-    stages {
-        stage('Build') {
-            steps {
-                checkout scm
-                sh 'go build -o app hw.go'
-            }
-        }
-        stage('Run') {
-            steps {
-                sh './app'
-            }
-        }
-    }
-}
+   pipeline {
+       agent {
+           docker {
+               image 'golang:latest'
+               args '-v /go:/go'
+           }
+       }
+       stages {
+           stage('Build') {
+               steps {
+                   sh 'go build -o app hw.go'
+               }
+           }
+           stage('Run') {
+               steps {
+                   sh './app'
+               }
+           }
+       }
+   }
