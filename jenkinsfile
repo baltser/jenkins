@@ -1,0 +1,16 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                checkout scm
+                sh 'go build -o app hw.go'
+            }
+        }
+        stage('Run') {
+            steps {
+                sh './app'
+            }
+        }
+    }
+}
