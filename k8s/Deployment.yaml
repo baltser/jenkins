@@ -16,5 +16,5 @@ spec:
         - name: myapp
           image: myapp:latest
           ports:
-            - containerPort: 8888
+            - containerPort: 8080
       
