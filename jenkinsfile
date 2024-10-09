@@ -14,10 +14,7 @@ pipeline {
         }
         stage('Run') {
             steps {
-                script {
-                    def containerID = sh(returnStdout: true, script: 'docker run -d myapp').trim()
-                    sh "docker logs ${containerID}"
-                }
+                sh 'docker run myapp'
             }
         }
     }
