@@ -10,3 +10,7 @@ WORKDIR /app
 COPY --from=builder /app/hw .
 EXPOSE 8888
 CMD ["./hw"]
+
+# Установка kubectl
+RUN apk add --no-cache kubectl
+ENV KUBECONFIG=/tmp/kubeconfig
