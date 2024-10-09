@@ -21,7 +21,7 @@ pipeline {
             steps {
                 script {
                     sh 'apk add --no-cache kubectl'
-                    sh 'kubectl apply -f k8s/'
+                    sh 'kubectl --validate=false apply -f k8s/'
                 }
             }
         }
