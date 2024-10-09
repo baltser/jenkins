@@ -2,12 +2,8 @@ pipeline {
     agent {
         docker {
             image 'docker:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp -v /tmp/kubeconfig:/tmp/kubeconfig:rw'
+            args '-v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp -u root'
         }
-    }
-    environment {
-        HOME = "${env.WORKSPACE}"
-        KUBECONFIG = "/tmp/kubeconfig"
     }
     stages {
         stage('Build') {
@@ -18,14 +14,12 @@ pipeline {
         }
         stage('Run') {
             steps {
-                sh 'docker run myapp'
+                sh 'docker run -d myapp'
             }
         }
         stage('Deploy to Kubernetes') {
             steps {
-                script {
-                    sh 'kubectl --kubeconfig=/tmp/kubeconfig apply -f k8s/'
-                }
+                kubernetesDeploy(manifests: 'k8s/*.yaml', kubeconfigId: 'kubeconfig')
             }
         }
     }
