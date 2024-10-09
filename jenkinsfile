@@ -5,6 +5,10 @@ pipeline {
             args '-v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp -v /tmp/kubeconfig:/tmp/kubeconfig:rw'
         }
     }
+    environment {
+        HOME = "${env.WORKSPACE}"
+        KUBECONFIG = "/tmp/kubeconfig"
+    }
     stages {
         stage('Build') {
             steps {
