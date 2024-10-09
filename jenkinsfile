@@ -21,7 +21,8 @@ pipeline {
             steps {
                 script {
                     sh 'apk add --no-cache kubectl'
-                    sh 'kubectl create -f k8s/'
+                    sh 'cp /var/jenkins_home/.kube/config /tmp/kubeconfig'
+                    sh 'kubectl apply -f k8s/'
                 }
             }
         }
