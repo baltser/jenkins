@@ -12,14 +12,16 @@ pipeline {
                 sh 'docker build -t myapp .'
             }
         }
-        stage('Run') {
-            steps {
-                script {
-                    def containerID = sh(returnStdout: true, script: 'docker run -d myapp').trim()
-                    sh "docker logs -f ${containerID}"
-                }
-            }
+stage('Run') {
+    timeout(time: 1, unit: 'MINUTES') {
+        script {
+            def containerID = sh(returnStdout: true, script: 'docker run -d myapp').trim()
+            sh "docker ps -f id=${containerID}"
+            sh "docker logs ${containerID}"
+            sh "docker stop ${containerID}"
         }
+    }
+}
         stage('Deploy to Kubernetes') {
             steps {
                 kubernetesDeploy(manifests: 'k8s/*.yaml', kubeconfigId: 'kubeconfig')
