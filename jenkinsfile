@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'docker:latest'
-             args '-u root'
+            args '-u root'
         }
     }
 
@@ -27,12 +27,6 @@ pipeline {
                     sh "docker logs ${containerID}"
                     sh "docker stop ${containerID}"
                 }
-            }
-        }
-
-        stage('Deploy to Kubernetes') {
-            steps {
-                kubernetesDeploy(manifests: 'k8s/*.yaml', kubeconfigId: 'kubeconfig')
             }
         }
     }
