@@ -2,31 +2,19 @@ pipeline {
     agent {
         docker {
             image 'docker:latest'
-            args '-u root'
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
-
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
+                checkout scm
                 sh 'docker build -t myapp .'
             }
         }
-
         stage('Run') {
             steps {
-                script {
-                    def containerID = sh(returnStdout: true, script: 'docker run -d myapp').trim()
-                    sh "docker ps -f id=${containerID}"
-                    sh "docker logs ${containerID}"
-                    sh "docker stop ${containerID}"
-                }
+                sh 'docker run myapp'
             }
         }
     }
