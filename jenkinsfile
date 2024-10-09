@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'docker:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp -u root'
+            args '-v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp -v /var/jenkins_home/.kube/config:/tmp/kubeconfig:ro -u root'
         }
     }
     stages {
@@ -20,8 +20,7 @@ pipeline {
         stage('Deploy to Kubernetes') {
             steps {
                 script {
-                    sh 'apk add --no-cache kubectl'
-                    sh 'cp /var/jenkins_home/.kube/config /tmp/kubeconfig'
+                    sh 'apk add --no-cache kubectl
                     sh 'kubectl apply -f k8s/'
                 }
             }
