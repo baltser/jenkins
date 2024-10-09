@@ -2,21 +2,33 @@ pipeline {
     agent {
         docker {
             image 'docker:latest'
-            args '-v /var/run/docker.sock:/var/run/docker.sock -v /tmp:/tmp -u root'
         }
     }
+
     stages {
-        stage('Build') {
+        stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
                 sh 'docker build -t myapp .'
             }
         }
+
         stage('Run') {
             steps {
-                sh 'docker run -d myapp'
+                script {
+                    def containerID = sh(returnStdout: true, script: 'docker run -d myapp').trim()
+                    sh "docker ps -f id=${containerID}"
+                    sh "docker logs ${containerID}"
+                    sh "docker stop ${containerID}"
+                }
             }
         }
+
         stage('Deploy to Kubernetes') {
             steps {
                 kubernetesDeploy(manifests: 'k8s/*.yaml', kubeconfigId: 'kubeconfig')
