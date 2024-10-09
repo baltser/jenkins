@@ -14,7 +14,15 @@ pipeline {
         }
         stage('Run') {
             steps {
-                sh 'docker run myapp'
+                script {
+                    def containerID = sh(returnStdout: true, script: 'docker run -d myapp').trim()
+                    sh "docker logs -f ${containerID}"
+                }
+            }
+        }
+        stage('Deploy to Kubernetes') {
+            steps {
+                kubernetesDeploy(manifests: 'k8s/*.yaml', kubeconfigId: 'kubeconfig')
             }
         }
     }
