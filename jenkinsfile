@@ -17,11 +17,9 @@ pipeline {
                 sh 'docker run -d myapp'
             }
         }
-        podTemplate {
-            node(POD_LABEL) {
-                stage('Run shell') {
-                    sh 'echo hello world'
-                }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f ./k8s/Pod.yaml'
             }
         }
     }
