@@ -17,9 +17,11 @@ pipeline {
                 sh 'docker run -d myapp'
             }
         }
-        stage('Deploy to Kubernetes') {
-            steps {
-                kubernetesDeploy(manifests: 'k8s/*.yaml', kubeconfigId: 'kubeconfig')
+        podTemplate {
+            node(POD_LABEL) {
+                stage('Run shell') {
+                    sh 'echo hello world'
+                }
             }
         }
     }
